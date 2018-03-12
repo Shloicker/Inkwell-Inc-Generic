@@ -1,2 +1,2 @@
-from .items import item, weapon
+from .items import item, weapon, healing_consumable, armour, shield, currency
 from .player import player
