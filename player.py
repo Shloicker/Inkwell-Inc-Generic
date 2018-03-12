@@ -1,5 +1,3 @@
-import items
-
 class player():
     def __init__(self, inventory):
         self.inventory = inventory
@@ -10,4 +8,4 @@ class player():
         return self.hp > 0
     def take_inventory(self):
         for item in self.inventory:
-            print("{} \n".format(item))
+            return "{} \n".format(item)
