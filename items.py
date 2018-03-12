@@ -32,7 +32,7 @@ class armour(item):
     def observe(self):
         return "{}\n-----\n{}\nValue: {}\nArmour: {}\n".format(self.name, self.description, self.value, self.armour_value)
 
-class sheild(item):
+class shield(item):
     def __init__(self, name, description, value, block_value):
         self.block_value = block_value
         super(shield, self).__init__(name, description, value)
