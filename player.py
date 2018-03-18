@@ -45,19 +45,19 @@ class player():
                     equipped_items.append("{} equipped as shield.".format(item))
         return '\n'.join('{}'.format(item) for item in equipped_items)
 
-    def move(self, dx, dy):
-        self.location_x += dx
-        self.location_y += dy
-        return world.tile_exists(self.location_x, self.location_y).intro_text()
+#     def move(self, dx, dy):
+#         self.location_x += dx
+#         self.location_y += dy
+#         return world.tile_exists(self.location_x, self.location_y).intro_text()
 
-    def move_north(self):
-        self.move(dx=0, dy=-1)
+#     def move_north(self):
+#         self.move(dx=0, dy=-1)
 
-    def move_south(self):
-        self.move(dx=0, dy=1)
+#     def move_south(self):
+#         self.move(dx=0, dy=1)
 
-    def move_east(self):
-        self.move(dx=1, dy=0)
+#     def move_east(self):
+#         self.move(dx=1, dy=0)
 
-    def move_west(self):
-        self.move(dx=-1, dy=0)
+#     def move_west(self):
+#         self.move(dx=-1, dy=0)

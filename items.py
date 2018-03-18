@@ -31,10 +31,6 @@ class armour(item):
         self.armour_value = armour_value
         self.equipped_as_armour = False
         super(armour, self).__init__(name, description, value)
-    def equip_armour(self):
-        for armour in player.inventory:
-            armour.equipped_as_armour = False
-        self.equipped_as_armour = True
     def observe(self):
         return "{}\n-----\n{}\nValue: {}\nArmour: {}\n".format(self.name, self.description, self.value, self.armour_value)
 
@@ -43,9 +39,5 @@ class shield(item):
         self.block_value = block_value
         self.equipped_as_shield = False
         super(shield, self).__init__(name, description, value)
-    def equip_shield(self):
-        for shield in player.inventory:
-            shield.equipped_as_shield = False
-        self.equipped_as_shield = True
     def observe(self):
         return "{}\n-----\n{}\nValue: {}\nBlock: {}\n".format(self.name, self.description, self.value, self.block_value)
