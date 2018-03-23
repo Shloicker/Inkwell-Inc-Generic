@@ -1,4 +1,6 @@
+import random
 import items
+import enemies
 
 class player():
     def __init__(self, inventory):
@@ -61,3 +63,19 @@ class player():
 
 #     def move_west(self):
 #         self.move(dx=-1, dy=0)
+
+    def attack(self, enemy):
+        for item in self.inventory:
+            if type(item) is items.weapon:
+                if item.equipped_as_weapon == True:
+                    equipped_weapon = item
+        if random.randint(0, 100) >= enemy.block:
+            enemy_resistance = (100 - enemy.armour)
+            dealt_damage = int(round((enemy_resistance * equipped_weapon.damage) / 100))
+            enemy.hp -= dealt_damage
+#             return enemy_resistance, dealt_damage, enemy.hp, enemy.armour
+            if not enemy.is_alive():
+                return "You hit {} with {}, dealing {} damage - a killing blow!".format(enemy.name, equipped_weapon.name, dealt_damage)
+            else:
+                return "You hit {} with {}, dealing {} damage!\n {} now has {} HP.".format(enemy.name, equipped_weapon.name, dealt_damage, enemy.name, enemy.hp)
+        return "Your attack misses!\n {} still has {} HP.".format(enemy.name, enemy.hp)
