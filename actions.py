@@ -25,3 +25,5 @@ Attack = action(player.attack, "Attack", "r")          #not sure
 EquipWeapon = action(player.equip_weapon, "Equip Weapon", "e")
 
 ViewEquippedItems = action(player.view_equipped_items, "View Equipped Items", "v")
+
+ObserveItem = action(player.observe_item, "Observe Item", "o")
