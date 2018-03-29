@@ -1,4 +1,5 @@
 class item(object):
+    """A generic item with no utility other than selling at shops. To create a generic item (an instance of this class) you would write 'item = text_adventure.item(name, description, value).' The name and description both have to be strings (i.e. words in quotations "") while the value has to be an integer and the arguments must be in the order as presented in the __init__ function of each class (directly below)."""
     def __init__(self, name, description, value):
         self.name = name
         self.description = description
@@ -9,6 +10,7 @@ class item(object):
         return "{}".format(self.name)
 
 class weapon(item):
+    """Similar to generic item - you simply write 'text_adventure.weapon(...)' for this one. It takes a fourth argument, damage, which must be an integer."""
     def __init__(self, name, description, value, damage):
         self.damage = damage
         self.equipped_as_weapon = False
@@ -17,9 +19,11 @@ class weapon(item):
         return "{}\n-----\n{}\nValue: {}\nDamage: {}\n".format(self.name, self.description, self.value, self.damage)
 
 class currency(item):
+    """We only want one instance of the currency class. Create it like you would a generic item."""
     pass                    #a dummy class so we can treat picking up currency differently to normal items (i.e it adds to our currency reserve rather than actually picking up an item)
 
 class healing_consumable(item):
+    """Self explanatory - healing amount is an integer between 0 and 100 (player has 100 health for reference)."""
     def __init__(self, name, description, value, healing_amount):
         self.healing_amount = healing_amount
         super(healing_consumable, self).__init__(name, description, value)
@@ -27,6 +31,7 @@ class healing_consumable(item):
         return "{}\n-----\n{}\nValue: {}\nHeals: {} health\n".format(self.name, self.description, self.value, self.health)
 
 class armour(item):
+    """Armour value is integer between 0 and 100. It reduces incoming damage by that percentage (i.e. 20 armour means damage is reduced by 20%)."""
     def __init__(self, name, description, value, armour_value):
         self.armour_value = armour_value
         self.equipped_as_armour = False
@@ -35,6 +40,7 @@ class armour(item):
         return "{}\n-----\n{}\nValue: {}\nArmour: {}\n".format(self.name, self.description, self.value, self.armour_value)
 
 class shield(item):
+    """Again block value is between 0 and 100. It is the percentage chance to dodge/block an attack."""
     def __init__(self, name, description, value, block_value):
         self.block_value = block_value
         self.equipped_as_shield = False

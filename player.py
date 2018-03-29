@@ -15,6 +15,9 @@ class player():
     def take_inventory(self):
         return '\n'.join('{}'.format(item) for item in self.inventory)
 
+    def observe_item(self, item):
+        return item.observe()
+
     def equip_weapon(self, weapon_to_be_equipped):
         for item in self.inventory:
             if type(item) is items.weapon:
@@ -47,22 +50,22 @@ class player():
                     equipped_items.append("{} equipped as shield.".format(item))
         return '\n'.join('{}'.format(item) for item in equipped_items)
 
-#     def move(self, dx, dy):
-#         self.location_x += dx
-#         self.location_y += dy
-#         return world.tile_exists(self.location_x, self.location_y).intro_text()
+    def move(self, dx, dy):
+        self.location_x += dx
+        self.location_y += dy
+        return world.tile_exists(self.location_x, self.location_y).intro_text()
 
-#     def move_north(self):
-#         self.move(dx=0, dy=-1)
+    def move_north(self):
+        self.move(dx=0, dy=-1)
 
-#     def move_south(self):
-#         self.move(dx=0, dy=1)
+    def move_south(self):
+        self.move(dx=0, dy=1)
 
-#     def move_east(self):
-#         self.move(dx=1, dy=0)
+    def move_east(self):
+        self.move(dx=1, dy=0)
 
-#     def move_west(self):
-#         self.move(dx=-1, dy=0)
+    def move_west(self):
+        self.move(dx=-1, dy=0)
 
     def attack(self, enemy):
         for item in self.inventory:
@@ -73,9 +76,13 @@ class player():
             enemy_resistance = (100 - enemy.armour)
             dealt_damage = int(round((enemy_resistance * equipped_weapon.damage) / 100))
             enemy.hp -= dealt_damage
-#             return enemy_resistance, dealt_damage, enemy.hp, enemy.armour
             if not enemy.is_alive():
                 return "You hit {} with {}, dealing {} damage - a killing blow!".format(enemy.name, equipped_weapon.name, dealt_damage)
             else:
                 return "You hit {} with {}, dealing {} damage!\n {} now has {} HP.".format(enemy.name, equipped_weapon.name, dealt_damage, enemy.name, enemy.hp)
         return "Your attack misses!\n {} still has {} HP.".format(enemy.name, enemy.hp)
+
+    def do_action(self, action, **kwargs):
+        action_method = getattr(self, action.method.__name__)
+        if action_method:
+            return action_method(**kwargs)
