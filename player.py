@@ -3,8 +3,9 @@ import items
 import enemies
 
 class player():
-    def __init__(self, inventory):
+    def __init__(self, inventory, currency_amount):
         self.inventory = inventory
+        self.currency_amount = currency_amount
         self.hp = 100
 #         self.location_x, self.location_y = world.starting_location
         self.victory = False
@@ -13,7 +14,7 @@ class player():
         return self.hp > 0
 
     def take_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.inventory)
+        return '\n'.join('{}'.format(item) for item in self.inventory) + "\nYou have {} currency.".format(self.currency_amount)
 
     def observe_item(self, item):
         return item.observe()
