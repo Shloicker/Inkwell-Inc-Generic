@@ -7,7 +7,12 @@ class enemy(object):
         self.damage = damage
         self.armour = armour
         self.block = block
+
     def is_alive(self):
         return self.hp >= 0
+
+    def observe_enemy(self):
+        return "{}\n-----\n{}\nHealth: {}\nDamage: {}\nArmour: {}\nBlock: {}".format(self.name, self.description, self.hp, self.damage, self.armour, self.block)
+
     def __str__(self):
         return self.name
