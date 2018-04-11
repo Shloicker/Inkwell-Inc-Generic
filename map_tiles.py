@@ -1,10 +1,23 @@
-import items, enemies, player, random, currency_config
+import items, enemies, player, random, currency_config, actions, world
 
 class map_tile(object):
     """A generic map tile - DO NOT create an instance of this class as it only serves as a parent to the classes below. 'x' and 'y' refer to the coordinates of the tile. Note that for the purposes of this game to y axis is inverted (i.e a tile with coordinates (0, 1) is directly below a tile with coordinates (0, 0)). Also note that any rooms that are adjacent to each other can be travelled between by the player."""
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        world._world[(self.x, self.y)] = self
+
+    def adjacent_moves(self):
+        moves = []
+        if world.tile_exists(self.x + 1, self.y):
+            moves.append(actions.MoveEast)
+        if world.tile_exists(self.x - 1, self.y):
+            moves.append(actions.MoveWest)
+        if world.tile_exists(self.x, self.y - 1):
+            moves.append(actions.MoveNorth)
+        if world.tile_exists(self.x, self.y + 1):
+            moves.append(actions.MoveSouth)
+        return moves
 
 class starting_room(map_tile):
     """You must create exactly one instance of this class as it will be the player's spawn point. Its coordinates are set to (0, 0) so keep this in mind when building the rest of the map. 'room_text' must be a string - it is the text that will be displayed to the player when they enter the room."""
@@ -14,6 +27,12 @@ class starting_room(map_tile):
 
     def show_room_text(self):
         return self.room_text
+
+    def available_actions(self):
+        moves = self.adjacent_moves()
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems]:
+            moves.append(move)
+        return moves
 
 class loot_room(map_tile):
     """This is a basic room. 'room_text' is as for starting room. 'tile_inventory' must be a list of items (the list can also be empty) that will be found in the room and 'tile_currency_amount' must be an integer that represents the amount of currency found in the room (this can be 0)."""
@@ -25,6 +44,12 @@ class loot_room(map_tile):
 
     def show_room_text(self):
         return self.room_text
+
+    def available_actions(self):
+        moves = self.adjacent_moves()
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems, actions.PickUp, actions.Drop]:
+            moves.append(move)
+        return moves
 
     def view_tile_inventory(self):
         return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\nThere is {} {} here.".format(self.tile_currency_amount, currency_config.currency)
@@ -65,7 +90,13 @@ class shop_room(map_tile):
     def show_room_text(self):
         return self.room_text
 
-    def view_shop_inventory(self):
+    def available_actions(self):
+        moves = self.adjacent_moves()
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems, actions.BuyItem, actions.SellItem]:
+            moves.append(move)
+        return moves
+
+    def view_tile_inventory(self):
         return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\nThis store has {} {}.".format(self.shop_currency_amount, currency_config.currency)
 
     def buy_item(self, player, item):
@@ -92,15 +123,24 @@ class shop_room(map_tile):
 
 class combat_room(loot_room):
     """A room in which the player will encounter an enemy. 'room_text_enemy_alive' is as for above with 'room_text' but will only be displayed is the enemy is alive. Similarly 'room_text_enemy_dead' will be displayed if the enemy is dead. 'tile_inventory' is as for loot_room but can only be accessed once the enemy has been killed. Finally 'enemy' must be an enemy."""
-    def __init__(self, x, y, room_text_enemy_alive, room_text_enemy_dead, tile_inventory, enemy):
+    def __init__(self, x, y, room_text_enemy_alive, room_text_enemy_dead, tile_inventory, tile_currency_amount, enemy):
         self.room_text_enemy_dead = room_text_enemy_dead
         self.enemy = enemy
-        super(combat_room, self).__init__(x, y, room_text_enemy_alive, tile_inventory)
+        super(combat_room, self).__init__(x, y, room_text_enemy_alive, tile_inventory, tile_currency_amount)
 
     def show_room_text(self):
         if self.enemy.is_alive():
             return room_text
         return room_text_enemy_dead
+
+    def available_actions(self):
+        if self.enemy.is_alive():
+            moves = [actions.Attack, actions.Flee, actions.Observe]
+            return moves
+        moves = self.adjacent_moves()
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems, actions.PickUp, actions.Drop]:
+            moves.append(move)
+        return moves
 
     def enemy_attack(self, player):
         for item in player.inventory:
@@ -115,7 +155,7 @@ class combat_room(loot_room):
             dealt_damage = int(round((player_resistance * self.enemy.damage) / 100))
             player.hp -= dealt_damage
             if player.is_not_dead():
-                return "{} hits you for {} damage!".format(self.enemy, dealt_damage)
+                return "{} hits you for {} damage!\nYou now have {} HP.".format(self.enemy, dealt_damage, player.hp)
             else:
                 return "You have fallen as {} has hit you for {} damage!".format(self.enemy, dealt_damage)
         return "{} attacks but misses!".format(self.enemy)
