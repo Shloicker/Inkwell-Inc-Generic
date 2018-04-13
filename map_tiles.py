@@ -19,20 +19,8 @@ class map_tile(object):
             moves.append(actions.MoveSouth)
         return moves
 
-class starting_room(map_tile):
-    """You must create exactly one instance of this class as it will be the player's spawn point. Its coordinates are set to (0, 0) so keep this in mind when building the rest of the map. 'room_text' must be a string - it is the text that will be displayed to the player when they enter the room."""
-    def __init__(self, room_text):
-        self.room_text = room_text
-        super(starting_room, self).__init__(0, 0)
-
-    def show_room_text(self):
-        return self.room_text
-
-    def available_actions(self):
-        moves = self.adjacent_moves()
-        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems]:
-            moves.append(move)
-        return moves
+    def victory(self, player):
+        pass
 
 class loot_room(map_tile):
     """This is a basic room. 'room_text' is as for starting room. 'tile_inventory' must be a list of items (the list can also be empty) that will be found in the room and 'tile_currency_amount' must be an integer that represents the amount of currency found in the room (this can be 0)."""
@@ -47,19 +35,19 @@ class loot_room(map_tile):
 
     def available_actions(self):
         moves = self.adjacent_moves()
-        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems, actions.PickUp, actions.Drop]:
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.Consume, actions.LookAround, actions.PickUp, actions.Drop]:
             moves.append(move)
         return moves
 
     def view_tile_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\nThere is {} {} here.".format(self.tile_currency_amount, currency_config.currency)
+        return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\n{} {}".format(self.tile_currency_amount, currency_config.world_currency)
 
     def pick_up_item(self, player, item):
-        if item == currency_config.currency:
+        if type(item) is items.currency:
             picked_up_currency = self.tile_currency_amount
             player.currency_amount += self.tile_currency_amount
             self.tile_currency_amount = 0
-            return "You pick up {} {}.".format(picked_up_currency, currency_config.currency)
+            return "You pick up {} {}.".format(picked_up_currency, item.name)
         if issubclass(type(item), items.item):
             if item in self.tile_inventory:
                 player.inventory.append(item)
@@ -69,7 +57,7 @@ class loot_room(map_tile):
         return "That is not an item."
 
     def drop_item(self, player, item):
-        if item == currency_config.currency:
+        if type(item) is items.currency:
             return "Why would you want to do that??"
         if issubclass(type(item), items.item):
             if item in player.inventory:
@@ -78,6 +66,15 @@ class loot_room(map_tile):
                 return "You drop {}".format(item.name)
             return "There is no {} in your inventory.".format(item.name)
         return "That is not an item."
+
+class starting_room(loot_room):
+    """You must create exactly one instance of this class as it will be the player's spawn point. Its coordinates are set to (0, 0) so keep this in mind when building the rest of the map. 'room_text' must be a string - it is the text that will be displayed to the player when they enter the room."""
+    def __init__(self, room_text, tile_inventory, tile_currency_amount):
+        super(starting_room, self).__init__(0, 0, room_text, tile_inventory, tile_currency_amount)
+
+class victory_room(loot_room):
+    def victory(self, player):
+        player.victory = True
 
 class shop_room(map_tile):
     """A room where the player can buy and sell items. 'room_text' is as for above. 'shop_inventory' is again a list of items that can be empty - this represents the items that are being sold. 'shop_currency_amount' is an integer that represents the currency that the store has available to buy items from the player."""
@@ -92,12 +89,12 @@ class shop_room(map_tile):
 
     def available_actions(self):
         moves = self.adjacent_moves()
-        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems, actions.BuyItem, actions.SellItem]:
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.Consume, actions.LookAround, actions.Buy, actions.Sell]:
             moves.append(move)
         return moves
 
     def view_tile_inventory(self):
-        return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\nThis store has {} {}.".format(self.shop_currency_amount, currency_config.currency)
+        return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\nThis store has {} {}.".format(self.shop_currency_amount, currency_config.world_currency)
 
     def buy_item(self, player, item):
         if issubclass(type(item), items.item):
@@ -106,7 +103,7 @@ class shop_room(map_tile):
                 player.currency_amount -= item.value
                 self.shop_currency_amount += item.value
                 self.shop_inventory.remove(item)
-                return "You have bought {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, currency_config.currency, player.currency_amount, currency_config.currency, self.shop_currency_amount, currency_config.currency)
+                return "You have bought {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, currency_config.world_currency, player.currency_amount, currency_config.world_currency, self.shop_currency_amount, currency_config.world_currency)
             return "The shop does not have {} in store.".format(item)
         return "That is not an item."
 
@@ -117,7 +114,7 @@ class shop_room(map_tile):
                 self.shop_currency_amount -= item.value
                 player.currency_amount += item.value
                 player.inventory.remove(item)
-                return "You have sold {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, currency_config.currency, player.currency_amount, currency_config.currency, self.shop_currency_amount, currency_config.currency)
+                return "You have sold {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, currency_config.world_currency, player.currency_amount, currency_config.world_currency, self.shop_currency_amount, currency_config.world_currency)
             return "You have no {} to sell.".format(item)
         return "That is not an item."
 
@@ -130,15 +127,15 @@ class combat_room(loot_room):
 
     def show_room_text(self):
         if self.enemy.is_alive():
-            return room_text
-        return room_text_enemy_dead
+            return self.room_text
+        return self.room_text_enemy_dead
 
     def available_actions(self):
         if self.enemy.is_alive():
             moves = [actions.Attack, actions.Flee, actions.Observe]
             return moves
         moves = self.adjacent_moves()
-        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.ViewEquippedItems, actions.PickUp, actions.Drop]:
+        for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.Consume, actions.LookAround, actions.PickUp, actions.Drop]:
             moves.append(move)
         return moves
 

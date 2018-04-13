@@ -13,22 +13,28 @@ class player():
         return self.hp > 0
 
     def take_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.inventory) + "\n{} {}.".format(self.currency_amount, currency_config.currency)
+        return '\n'.join('{}'.format(item) for item in self.inventory) + "\n{} {}.".format(self.currency_amount, currency_config.world_currency) + "\nYou have {} HP.".format(self.hp)
 
     def observe(self, subject):
         if issubclass(type(subject), items.item):
             return subject.observe_item()
         if issubclass(type(subject), enemies.enemy):
             return subject.observe_enemy()
-#         if issubclass(type(subject), map_tiles.map_tile):
-#             if issubclass(type(subject), map_tiles.loot_room):
-#                 return subject.view_tile_inventory()
-#             if issubclass(type(subject), map_tiles.shop_room):
-#                 return subject.show_shop_inventory()
         return "There is no such thing."
 
     def look_around(self):
         return world.tile_exists(self.location_x, self.location_y).view_tile_inventory()
+
+    def consume(self, item):
+        if issubclass(type(item), items.healing_consumable):
+            healing = item.healing_amount
+            if self.hp + healing >= 100:
+                healing = 100 - self.hp
+                self.hp = 100
+                return "You gain {} health. You now have {} HP.".format(healing, self.hp)
+            self.hp += healing
+            return "You gain {} health. You now have {} HP.".format(healing, self.hp)
+        return "You cannot consume that!"
 
     def equip(self, item_to_be_equipped):
         if issubclass(type(item_to_be_equipped), items.weapon):
@@ -50,19 +56,19 @@ class player():
             item_to_be_equipped.equipped_as_shield = True
             return "You have equipped {} as shield.".format(item_to_be_equipped)
 
-    def view_equipped_items(self):
-        equipped_items = []
-        for item in self.inventory:
-            if issubclass(type(item), items.weapon):
-                if item.equipped_as_weapon:
-                    equipped_items.append("{} equipped as weapon.".format(item))
-            if issubclass(type(item), items.armour):
-                if item.equipped_as_armour:
-                    equipped_items.append("{} equipped as armour.".format(item))
-            if issubclass(type(item), items.shield):
-                if item.equipped_as_shield:
-                    equipped_items.append("{} equipped as shield.".format(item))
-        return '\n'.join('{}'.format(string) for string in equipped_items)
+#     def view_equipped_items(self):
+#         equipped_items = []
+#         for item in self.inventory:
+#             if issubclass(type(item), items.weapon):
+#                 if item.equipped_as_weapon:
+#                     equipped_items.append("{} equipped as weapon.".format(item))
+#             if issubclass(type(item), items.armour):
+#                 if item.equipped_as_armour:
+#                     equipped_items.append("{} equipped as armour.".format(item))
+#             if issubclass(type(item), items.shield):
+#                 if item.equipped_as_shield:
+#                     equipped_items.append("{} equipped as shield.".format(item))
+#         return '\n'.join('{}'.format(string) for string in equipped_items)
 
     def move(self, dx, dy):
         self.location_x += dx
@@ -82,18 +88,19 @@ class player():
         return self.move(dx=-1, dy=0)
 
     def pick_up(self, item):
-        world.tile_exists(self.location_y, self.location_y).pick_up_item(self, item)
+        return world.tile_exists(self.location_x, self.location_y).pick_up_item(self, item)
 
     def drop(self, item):
-        return world.tile_exists(self.location_y, self.location_y).drop_item(self, item)
+        return world.tile_exists(self.location_x, self.location_y).drop_item(self, item)
 
     def buy(self, item):
-        return world.tile_exists(self.location_y, self.location_y).buy_item(self, item)
+        return world.tile_exists(self.location_x, self.location_y).buy_item(self, item)
 
     def sell(self, item):
-        return world.tile_exists(self.location_y, self.location_y).sell_item(self, item)
+        return world.tile_exists(self.location_x, self.location_y).sell_item(self, item)
 
-    def attack(self, enemy):
+    def attack(self):
+        enemy = world.tile_exists(self.location_x, self.location_y).enemy
         for item in self.inventory:
             if issubclass(type(item), items.weapon):
                 if item.equipped_as_weapon:

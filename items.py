@@ -1,15 +1,21 @@
+import world
+
 class item(object):
     """A generic item with no utility other than selling at shops. To create a generic item (an instance of this class) you would write 'item = text_adventure.item(name, description, value).' The name and description both have to be strings (i.e. words in quotations "") while the value has to be an integer and the arguments must be in the order as presented in the __init__ function of each class (directly below)."""
     def __init__(self, name, description, value):
         self.name = name
         self.description = description
         self.value = value
+        world._objects[name] = self
 
     def observe_item(self):
         return "{}\n-----\n{}\nValue: {}\n".format(self.name, self.description, self.value)
 
     def __str__(self):
         return "{}".format(self.name)
+
+class currency(item):
+    pass
 
 class weapon(item):
     """Similar to generic item - you simply write 'text_adventure.weapon(...)' for this one. It takes a fourth argument, damage, which must be an integer."""
@@ -21,6 +27,11 @@ class weapon(item):
     def observe_item(self):
         return "{}\n-----\n{}\nValue: {}\nDamage: {}\n".format(self.name, self.description, self.value, self.damage)
 
+    def __str__(self):
+        if self.equipped_as_weapon:
+            return "{} (equipped)".format(self.name)
+        return "{}".format(self.name)
+
 class healing_consumable(item):
     """Self explanatory - healing amount is an integer between 0 and 100 (player has 100 health for reference)."""
 
@@ -29,7 +40,7 @@ class healing_consumable(item):
         super(healing_consumable, self).__init__(name, description, value)
 
     def observe_item(self):
-        return "{}\n-----\n{}\nValue: {}\nHeals: {} health\n".format(self.name, self.description, self.value, self.health)
+        return "{}\n-----\n{}\nValue: {}\nHeals: {} health\n".format(self.name, self.description, self.value, self.healing_amount)
 
 class armour(item):
     """Armour value is integer between 0 and 100. It reduces incoming damage by that percentage (i.e. 20 armour means damage is reduced by 20%)."""
@@ -41,6 +52,11 @@ class armour(item):
     def observe_item(self):
         return "{}\n-----\n{}\nValue: {}\nArmour: {}\n".format(self.name, self.description, self.value, self.armour_value)
 
+    def __str__(self):
+        if self.equipped_as_armour:
+            return "{} (equipped)".format(self.name)
+        return "{}".format(self.name)
+
 class shield(item):
     """Again block value is between 0 and 100. It is the percentage chance to dodge/block an attack."""
     def __init__(self, name, description, value, block_value):
@@ -50,3 +66,8 @@ class shield(item):
 
     def observe_item(self):
         return "{}\n-----\n{}\nValue: {}\nBlock: {}\n".format(self.name, self.description, self.value, self.block_value)
+
+    def __str__(self):
+        if self.equipped_as_shield:
+            return "{} (equipped)".format(self.name)
+        return "{}".format(self.name)

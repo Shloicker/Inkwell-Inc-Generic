@@ -1,3 +1,5 @@
+import world
+
 class enemy(object):
     """The arguments here are as for item classes. HP is an integer. Note that enemies do not carry items but just have their own damage and armour values etc."""
     def __init__(self, name, description, hp, damage, armour, block):
@@ -7,6 +9,7 @@ class enemy(object):
         self.damage = damage
         self.armour = armour
         self.block = block
+        world._objects[name] = self
 
     def is_alive(self):
         return self.hp >= 0
