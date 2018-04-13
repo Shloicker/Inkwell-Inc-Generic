@@ -1,68 +1,44 @@
 from player import player
 
 class action(object):
-    def __init__(self, method, name, hotkey, **kwargs):
+    def __init__(self, method, name):
         self.method = method
         self.name = name
-        self.hotkey = hotkey
-        self.kwargs = kwargs
 
     def __str__(self):
-        return "{}: {}".format(self.hotkey, self.name)
+        return "{}".format(self.name)
 
-MoveNorth = action(player.move_north, "Move North", "w")
-# class MoveNorth(action):
-#     def __init__(self):
-#         super(MoveNorth, self).__init__(method=player.move_north, name="Move North", hotkey="w")
+class action_arg(action):
+    def __init__(self, method, name, prompt):
+        self.prompt = prompt
+        super(action_arg, self).__init__(method, name)
 
-MoveSouth = action(player.move_south, "Move South", "s")
-# class MoveSouth(action):
-#     def __init__(self):
-#         super(MoveSouth, self).__init__(method=player.move_south, name="Move South", hotkey="s")
+MoveNorth = action(player.move_north, "move north")
 
-MoveEast = action(player.move_east, "Move East", "a")
-# class MoveEast(action):
-#     def __init__(self):
-#         super(MoveEast, self).__init__(method=player.move_east, name="Move East", hotkey="a")
+MoveSouth = action(player.move_south, "move south")
 
-MoveWest = action(player.move_west, "Move West", "d")
-# class MoveWest(action):
-#     def __init__(self):
-#         super(MoveWest, self).__init__(method=player.move_west, name="Move West", hotkey="d")
+MoveEast = action(player.move_east, "move east")
 
-TakeInventory = action(player.take_inventory, "Take Inventory", "i")
-# class TakeInventory(action):
-#     def __init__(self):
-#         super(TakeInventory, self).__init__(player.take_inventory, "Take Inventory", "i")
+MoveWest = action(player.move_west, "move west")
 
-Attack = action(player.attack, "Attack", "r")
-# class Attack(action):
-#     def __init__(self, enemy):
-#         super(Attack, self).__init__(method=player.attack, name="Attack", hotkey="r")
+TakeInventory = action(player.take_inventory, "take inventory")
 
-Equip = action(player.equip, "Equip", "e")
-# class EquipWeapon(action):
-#     def __init__(self):
-#         super(EquipWeapon, self).__init__(method=player.equip_weapon, name="Equip Weapon", hotkey="e")
+Attack = action(player.attack, "attack")
 
-ViewEquippedItems = action(player.view_equipped_items, "View Equipped Items", "v")
-# class ViewEquippedItems(action):
-#     def __init__(self):
-#         super(ViewEquippedItems, self).__init__(method=player.view_equipped_items, name="View Equipped Items", hotkey="v")
+Equip = action_arg(player.equip, "equip", "What do you want to equip?")
 
-Observe = action(player.observe, "Observe", "o")
-# class Observe(action):
-#     def __init__(self, subject):
-#         super(Observe, self).__init__(method=player.observe, name="Observe", hotkey="o", subject=subject)
+Consume = action_arg(player.consume, "consume", "What do you want to consume?")
 
-LookAround = action(player.look_around, "Look for Loot", "p")
+Observe = action_arg(player.observe, "observe", "What do you want to observe?")
 
-Drop = action(player.drop, "Drop", "j")
+LookAround = action(player.look_around, "look around")
 
-PickUp = action(player.pick_up, "Pick Up", "l")
+Drop = action_arg(player.drop, "drop", "What do you want to drop?")
 
-Buy = action(player.buy, "Buy", "n")
+PickUp = action_arg(player.pick_up, "pick up", "What do you want to pick up?")
 
-Sell = action(player.sell, "Sell", "m")
+Buy = action_arg(player.buy, "buy", "What do you want to buy?")
 
-Flee = action(player.flee, "Flee", "f")
+Sell = action_arg(player.sell, "sell", "What do you want to sell?")
+
+Flee = action(player.flee, "flee")
