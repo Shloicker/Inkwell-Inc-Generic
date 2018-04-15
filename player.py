@@ -26,7 +26,10 @@ class player():
         return world.tile_exists(self.location_x, self.location_y).view_tile_inventory()
 
     def consume(self, item):
+        if item not in self.inventory:
+            "There is no {} in your inventory.".format(item.name)
         if issubclass(type(item), items.healing_consumable):
+            self.inventory.remove(item)
             healing = item.healing_amount
             if self.hp + healing >= 100:
                 healing = 100 - self.hp
@@ -37,6 +40,8 @@ class player():
         return "You cannot consume that!"
 
     def equip(self, item_to_be_equipped):
+        if item_to_be_equipped not in self.inventory:
+            return "There is no {} in your inventory.".format(item_to_be_equipped.name)
         if issubclass(type(item_to_be_equipped), items.weapon):
             for item in self.inventory:
                 if issubclass(type(item), items.weapon):
@@ -55,20 +60,6 @@ class player():
                     item.equipped_as_shield = False
             item_to_be_equipped.equipped_as_shield = True
             return "You have equipped {} as shield.".format(item_to_be_equipped)
-
-#     def view_equipped_items(self):
-#         equipped_items = []
-#         for item in self.inventory:
-#             if issubclass(type(item), items.weapon):
-#                 if item.equipped_as_weapon:
-#                     equipped_items.append("{} equipped as weapon.".format(item))
-#             if issubclass(type(item), items.armour):
-#                 if item.equipped_as_armour:
-#                     equipped_items.append("{} equipped as armour.".format(item))
-#             if issubclass(type(item), items.shield):
-#                 if item.equipped_as_shield:
-#                     equipped_items.append("{} equipped as shield.".format(item))
-#         return '\n'.join('{}'.format(string) for string in equipped_items)
 
     def move(self, dx, dy):
         self.location_x += dx
@@ -91,20 +82,35 @@ class player():
         return world.tile_exists(self.location_x, self.location_y).pick_up_item(self, item)
 
     def drop(self, item):
+        if issubclass(type(item), items.weapon):
+            item.equipped_as_weapon = False
+        if issubclass(type(item), items.armour):
+            item.equipped_as_armour = False
+        if issubclass(type(item), items.shield):
+            item.equipped_as_shield = False
         return world.tile_exists(self.location_x, self.location_y).drop_item(self, item)
 
     def buy(self, item):
         return world.tile_exists(self.location_x, self.location_y).buy_item(self, item)
 
     def sell(self, item):
+        if issubclass(type(item), items.weapon):
+            item.equipped_as_weapon = False
+        if issubclass(type(item), items.armour):
+            item.equipped_as_armour = False
+        if issubclass(type(item), items.shield):
+            item.equipped_as_shield = False
         return world.tile_exists(self.location_x, self.location_y).sell_item(self, item)
 
     def attack(self):
         enemy = world.tile_exists(self.location_x, self.location_y).enemy
+        equipped_weapon = None
         for item in self.inventory:
             if issubclass(type(item), items.weapon):
                 if item.equipped_as_weapon:
                     equipped_weapon = item
+        if equipped_weapon == None:
+            return "You need a weapon first!"
         if random.randint(0, 100) >= enemy.block:
             enemy_resistance = (100 - enemy.armour)
             dealt_damage = int(round((enemy_resistance * equipped_weapon.damage) / 100))
@@ -116,9 +122,9 @@ class player():
         return "Your attack misses!\n {} still has {} HP.".format(enemy, enemy.hp) + "\n" + world.tile_exists(self.location_x, self.location_y).enemy_attack(self)
 
     def flee(self):
-        world.tile_exists(self.location_x, self.locaton_y).adjacent_moves()
+        moves = world.tile_exists(self.location_x, self.location_y).adjacent_moves()
         r = random.randint(0, len(moves) - 1)
-        return self.do_action(moves[r])
+        return world.tile_exists(self.location_x, self.location_y).enemy_attack(self) + "\n" + self.do_action(moves[r])
 
     def do_action(self, action, *args):
         action_method = getattr(self, action.method.__name__)

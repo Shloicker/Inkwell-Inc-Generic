@@ -9,7 +9,7 @@ class enemy(object):
         self.damage = damage
         self.armour = armour
         self.block = block
-        world._objects[name] = self
+        world._objects[name.lower()] = self
 
     def is_alive(self):
         return self.hp >= 0

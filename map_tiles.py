@@ -99,6 +99,8 @@ class shop_room(map_tile):
     def buy_item(self, player, item):
         if issubclass(type(item), items.item):
             if item in self.shop_inventory:
+                if item.value >= player.currency_amount:
+                    return "You can't afford that!"
                 player.inventory.append(item)
                 player.currency_amount -= item.value
                 self.shop_currency_amount += item.value
@@ -110,6 +112,8 @@ class shop_room(map_tile):
     def sell_item(self, player, item):
         if issubclass(type(item), items.item):
             if item in player.inventory:
+                if item.value >= self.shop_currency_amount:
+                    return "The store can't afford that!"
                 self.shop_inventory.append(item)
                 self.shop_currency_amount -= item.value
                 player.currency_amount += item.value
@@ -140,6 +144,8 @@ class combat_room(loot_room):
         return moves
 
     def enemy_attack(self, player):
+        equipped_shield = None
+        equipped_armour = None
         for item in player.inventory:
             if issubclass(type(item), items.shield):
                 if item.equipped_as_shield:
@@ -147,9 +153,16 @@ class combat_room(loot_room):
             if issubclass(type(item), items.armour):
                 if item.equipped_as_armour:
                     equipped_armour = item
-        if random.randint(0, 100) >= equipped_shield.block_value:
-            player_resistance = 100 - equipped_armour.armour_value
-            dealt_damage = int(round((player_resistance * self.enemy.damage) / 100))
+        if equipped_shield == None:
+            block_value = 10
+        else:
+            block_value = equipped_shield.block_value
+        if equipped_armour == None:
+            armour = 100
+        else:
+            armour = 100 - equipped_armour.armour_value
+        if random.randint(0, 100) >= block_value:
+            dealt_damage = int(round((armour * self.enemy.damage) / 100))
             player.hp -= dealt_damage
             if player.is_not_dead():
                 return "{} hits you for {} damage!\nYou now have {} HP.".format(self.enemy, dealt_damage, player.hp)
