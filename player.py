@@ -26,8 +26,10 @@ class player():
         return world.tile_exists(self.location_x, self.location_y).view_tile_inventory()
 
     def consume(self, item):
+        if issubclass(type(item), enemies.enemy):
+            return "{} cannot be consumed.".format(item)
         if item not in self.inventory:
-            "There is no {} in your inventory.".format(item.name)
+            return "There is no {} in your inventory.".format(item.name)
         if issubclass(type(item), items.healing_consumable):
             self.inventory.remove(item)
             healing = item.healing_amount
@@ -37,9 +39,11 @@ class player():
                 return "You gain {} health. You now have {} HP.".format(healing, self.hp)
             self.hp += healing
             return "You gain {} health. You now have {} HP.".format(healing, self.hp)
-        return "You cannot consume that!"
+        return "{} cannot be consumed.".format(item)
 
     def equip(self, item_to_be_equipped):
+        if issubclass(type(item_to_be_equipped), enemies.enemy):
+            return "{} cannot be equipped.".format(item_to_be_equipped)
         if item_to_be_equipped not in self.inventory:
             return "There is no {} in your inventory.".format(item_to_be_equipped.name)
         if issubclass(type(item_to_be_equipped), items.weapon):
@@ -60,6 +64,7 @@ class player():
                     item.equipped_as_shield = False
             item_to_be_equipped.equipped_as_shield = True
             return "You have equipped {} as shield.".format(item_to_be_equipped)
+        return "{} cannot be equipped.".format(item_to_be_equipped)
 
     def move(self, dx, dy):
         self.location_x += dx
