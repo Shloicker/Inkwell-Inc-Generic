@@ -1,4 +1,4 @@
-import world
+import text_adventure.world as world
 
 class enemy(object):
     """The arguments here are as for item classes. HP is an integer. Note that enemies do not carry items but just have their own damage and armour values etc."""
