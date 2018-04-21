@@ -1,4 +1,4 @@
-import world
+import text_adventure.world as world
 
 class item(object):
     """A generic item with no utility other than selling at shops. To create a generic item (an instance of this class) you would write 'item = text_adventure.item(name, description, value).' The name and description both have to be strings (i.e. words in quotations "") while the value has to be an integer and the arguments must be in the order as presented in the __init__ function of each class (directly below)."""
@@ -15,7 +15,8 @@ class item(object):
         return "{}".format(self.name)
 
 class currency(item):
-    pass
+    def __init__(self, name, description):
+        super(currency, self).__init__(name, description, 1)
 
 class weapon(item):
     """Similar to generic item - you simply write 'text_adventure.weapon(...)' for this one. It takes a fourth argument, damage, which must be an integer."""

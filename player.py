@@ -1,4 +1,8 @@
-import items, enemies, random, currency_config, world
+import text_adventure.items as items
+import text_adventure.enemies as enemies
+import random
+import text_adventure.currency_config as currency_config
+import text_adventure.world as world
 
 class player():
     def __init__(self, inventory, currency_amount):

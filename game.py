@@ -1,6 +1,7 @@
 import text_adventure, game_items, game_enemies, game_map
+from game_player import player_inventory, player_currency
 
-player = text_adventure.player([game_items.iron_sword, game_items.iron_armour, game_items.iron_shield], 100)
+player = text_adventure.player(player_inventory, player_currency)
 room = text_adventure.tile_exists(player.location_x, player.location_y)
 print(room.show_room_text())
 while player.is_not_dead() and not player.victory:

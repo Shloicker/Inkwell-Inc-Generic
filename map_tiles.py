@@ -1,4 +1,10 @@
-import items, enemies, player, random, currency_config, actions, world
+import text_adventure.items as items
+import text_adventure.enemies as enemies
+import text_adventure.player as player
+import random
+import text_adventure.currency_config as currency_config
+import text_adventure.actions as actions
+import text_adventure.world as world
 
 class map_tile(object):
     """A generic map tile - DO NOT create an instance of this class as it only serves as a parent to the classes below. 'x' and 'y' refer to the coordinates of the tile. Note that for the purposes of this game to y axis is inverted (i.e a tile with coordinates (0, 1) is directly below a tile with coordinates (0, 0)). Also note that any rooms that are adjacent to each other can be travelled between by the player."""

@@ -1,4 +1,4 @@
-from player import player
+from text_adventure.player import player
 
 class action(object):
     def __init__(self, method, name):
