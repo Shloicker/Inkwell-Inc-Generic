@@ -7,3 +7,5 @@ _objects = {}
 
 def object_exists(name):
     return _objects.get(name)
+
+world_currency = ""

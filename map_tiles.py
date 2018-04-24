@@ -2,7 +2,6 @@ import text_adventure.items as items
 import text_adventure.enemies as enemies
 import text_adventure.player as player
 import random
-import text_adventure.currency_config as currency_config
 import text_adventure.actions as actions
 import text_adventure.world as world
 
@@ -46,7 +45,7 @@ class loot_room(map_tile):
         return moves
 
     def view_tile_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\n{} {}".format(self.tile_currency_amount, currency_config.world_currency)
+        return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\n{} {}".format(self.tile_currency_amount, world.world_currency)
 
     def pick_up_item(self, player, item):
         if type(item) is items.currency:
@@ -79,6 +78,9 @@ class starting_room(loot_room):
         super(starting_room, self).__init__(0, 0, room_text, tile_inventory, tile_currency_amount)
 
 class victory_room(loot_room):
+    def __init__(self, x, y, description):
+        super(victory_room, self).__init__(x, y, description, [], 0)
+
     def victory(self, player):
         player.victory = True
 
@@ -100,7 +102,7 @@ class shop_room(map_tile):
         return moves
 
     def view_tile_inventory(self):
-        return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\nThis store has {} {}.".format(self.shop_currency_amount, currency_config.world_currency)
+        return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\nThis store has {} {}.".format(self.shop_currency_amount, world.world_currency)
 
     def buy_item(self, player, item):
         if issubclass(type(item), items.item):
@@ -111,7 +113,7 @@ class shop_room(map_tile):
                 player.currency_amount -= item.value
                 self.shop_currency_amount += item.value
                 self.shop_inventory.remove(item)
-                return "You have bought {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, currency_config.world_currency, player.currency_amount, currency_config.world_currency, self.shop_currency_amount, currency_config.world_currency)
+                return "You have bought {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount, world.world_currency)
             return "The shop does not have {} in store.".format(item)
         return "That is not an item."
 
@@ -124,7 +126,7 @@ class shop_room(map_tile):
                 self.shop_currency_amount -= item.value
                 player.currency_amount += item.value
                 player.inventory.remove(item)
-                return "You have sold {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, currency_config.world_currency, player.currency_amount, currency_config.world_currency, self.shop_currency_amount, currency_config.world_currency)
+                return "You have sold {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount, world.world_currency)
             return "You have no {} to sell.".format(item)
         return "That is not an item."
 
