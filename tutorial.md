@@ -39,7 +39,7 @@
 
 ### Playing the Game
 
- To play the game you need to run ```game.py```:
+ The recommended python version for this program is 2.7.12. To play the game you need to run ```game.py```:
 
     python game.py
 
@@ -122,9 +122,9 @@ Note that currency is a special item that must simply be referred to as 'gold' o
 | Buy | Buy an item from the store in your current room. |
 | Sell | Sell an item to the store in your current room. |
 | Attack | Attack the enemy in your current room. If the enemy survives, they will attack in turn. |
-| Flee | Flee to a random adjacent room. You will be attacked as you leave the room. |
+| Flee | Flee from an enemy to a random adjacent room. You will be attacked as you leave the room. |
 
- In combat you need to consider the health, damage, armour and block or yourself and the enemy you are facing. Health and damage are self explanatory; armour is resistance to damage and block is the chance to dodge or block an attack.
+ In combat you need to consider the health, damage, armour and block of yourself and the enemy you are facing. Health and damage are self explanatory; armour is resistance to damage and block is the chance to dodge or block an attack.
 
     Action: observe
 
@@ -193,10 +193,6 @@ Note that currency is a special item that must simply be referred to as 'gold' o
     #name, description
     >>> gold = currency("Gold", "Valuable gold coins.")
 
- The default currency is gold - note that if you want to change the name of the in-game currency you will also need to edit an additional file in the source code itself, named ```currency_config.py```. This is the only file in the source code that should be edited, hence the 'config' prefix. By changing the name of the string in the file, you can change the name of the in-game currency:
-
-    >>> world_currency = "silver"
-
  Note that, while the player will refer to items by their names, when referencing your items in ```game_player.py``` and ```game_map.py```, you will need to refer to them by their python ID, such as 'iron_sword.'
 
  Finally, editing ```game_player.py``` is trivial; 'player_inventory' is the list of items that the player will start with and it can be empty. Remember to use the 'game_items' prefix on each item you reference. 'player_currency' is an integer that represents the amount of currency that the player will start with. Do not include your currency item in the player inventory - you are not supposed to create instances of it in-game.
@@ -215,7 +211,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
     #name, description, hp, damage, armour, block
     >>> bandit = enemy("Bandit", "A scary bandit.", 100, 50, 25, 25)
 
- Similarly to in the case of armour and shield items, the armour value determines their resistance to damage and the block value determines their chance to dodge or block an attack. Note that enemies do not carry items but you can give the impression that they have dropped items when killed by adding such items to their tile - this will be discussed in the following section.
+ Similarly to in the case of armour and shield items, the armour value determines their resistance to damage and the block value determines their chance to dodge or block an attack. Note that enemies do not carry items but you can give the impression that they have dropped items when killed by adding such items to their tile - this will be discussed in the following section. Also at this stage in development it is not recommended to include more than one instance of an enemy in the game as this may lead to oddities with the code - you can , however, easily create two enemies that have the same name, description and stats if desired.
 
 #### The Map
 
@@ -236,7 +232,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
     #description, tile inventory, tile currency amount
     >>> start_room = starting_room("You begin your journey.", [], 0)
 
- The shop room takes similar arguments to a loot room but, instead of being able to pick up and drop items, the player can only buy and sell items from the merchant.
+ The shop room takes similar arguments to a loot room but, instead of being able to pick up and drop items, the player can only buy and sell items from the vendor.
 
     #x, y, description, shop inventory, shop currency amount
     merchant_room = shop_room(0, -1, "This room has a merchant in it.", [game_items.steel_sword, game_items.steel_shield], 1000)
@@ -246,9 +242,9 @@ Note that currency is a special item that must simply be referred to as 'gold' o
  The combat room is another special loot room that has an enemy in it. It takes seven arguments:
 
     #x, y, enemy alive description, enemy dead description, tile inventory, tile currency amount, enemy
-    bandit_room = combat_room(0, -1, "This room has a bandit in it!", "This room has a dead bandit in it.", [game_items.iron_sword], 100, game_enemies.enemy)
+    bandit_room = combat_room(0, -1, "This room has a bandit in it!", "This room has a dead bandit in it.", [game_items.iron_sword], 100, game_enemies.bandit)
 
- You must give two descriptions for this room type as the description will change depending on if the enemy is alive or not. The 'enemy' argument is the enemy you want to be in the room - you will need to reference your ```game_enemies.py``` file for this as shown. At this stage it is not recommended to use the same enemy in different rooms as this could lead to confusions in the code - of course, there is nothing stopping you from creating two enemies with exactly the same names, descriptions and stats. Also note that you cannot have more than one enemy in a room although there is no reason why you could not get creative and create a group of enemies as a single enemy in the enemies file - a 'a mob of bandits,' for example. If the player kills the enemy in the room, it will behave as a normal loot room; they can only pick up and drop items once the enemy has been killed so you can easily create the impression that the enemy has dropped the items left in the room.
+ You must give two descriptions for this room type as the description will change depending on if the enemy is alive or not. The 'enemy' argument is the enemy you want to be in the room - you will need to reference your ```game_enemies.py``` file for this as shown. At this stage it is not recommended to use the same enemy in different rooms as this could lead to confusions in the code - of course, there is nothing stopping you from creating two enemies with exactly the same names, descriptions and stats (but different IDs). Also note that you cannot have more than one enemy in a room although there is no reason why you could not get creative and create a 'fake' group of enemies as a single enemy in the enemies file - a 'a mob of bandits,' for example. If the player kills the enemy in the room, it will behave as a normal loot room; they can only pick up and drop items once the enemy has been killed so you can easily create the impression that the enemy has dropped the items left in the room.
 
  The final room type is the victory room - this room will cause the player to win when they enter it and thus end the game. It is recommended to create at least one room of this type as the player will not be able to end the game other than by dying otherwise. It does not require an inventory or tile currency amount:
 
