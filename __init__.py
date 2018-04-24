@@ -1,5 +1,4 @@
-from .world import _world, tile_exists, _objects, object_exists
-from .currency_config import world_currency
+from .world import _world, tile_exists, _objects, object_exists, world_currency
 from .items import item, weapon, healing_consumable, armour, shield, currency
 from .enemies import enemy
 from .player import player

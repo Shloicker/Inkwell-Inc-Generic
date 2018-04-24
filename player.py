@@ -1,7 +1,6 @@
 import text_adventure.items as items
 import text_adventure.enemies as enemies
 import random
-import text_adventure.currency_config as currency_config
 import text_adventure.world as world
 
 class player():
@@ -17,7 +16,7 @@ class player():
         return self.hp > 0
 
     def take_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.inventory) + "\n{} {}.".format(self.currency_amount, currency_config.world_currency) + "\nYou have {} HP.".format(self.hp)
+        return '\n'.join('{}'.format(item) for item in self.inventory) + "\n{} {}.".format(self.currency_amount, world.world_currency) + "\nYou have {} HP.".format(self.hp)
 
     def observe(self, subject):
         if issubclass(type(subject), items.item):

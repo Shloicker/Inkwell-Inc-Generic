@@ -16,6 +16,7 @@ class item(object):
 
 class currency(item):
     def __init__(self, name, description):
+        world.world_currency = name
         super(currency, self).__init__(name, description, 1)
 
 class weapon(item):
