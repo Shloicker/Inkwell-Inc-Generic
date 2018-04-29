@@ -227,7 +227,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
 
  The first two arguments are integers and represent the tile's x coordinate and y coordinate respectively. The third is a string and is the description for the room - this is the text that the player will see every time they enter the room. The fourth is a list of items, which can of course be empty. Remember to prefix each item with 'game_items' as shown. The fifth argument is an integer representing the amount of currency that can be found in the room.
 
-  The starting room is a special loot room but the coordinates are forced to be (0, 0). This is the room that the player will start in and you should __create exactly one room of this type__. It takes the same arguments as the loot room but with the coordinates omitted:
+  The starting room is a special loot room but the coordinates are forced to be (0, 0). This is the room that the player will start in and you should __create exactly one room of this type__, or else create a room with coordinates (0, 0). It takes the same arguments as the loot room but with the coordinates omitted:
 
     #description, tile inventory, tile currency amount
     >>> start_room = starting_room("You begin your journey.", [], 0)
