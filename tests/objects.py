@@ -18,5 +18,6 @@ a_loot_room = text_adventure.loot_room(1, 0, "This is a room with loot in it.", 
 a_combat_room_bandit = text_adventure.combat_room(0, -1, "This room has a bandit in it.", "This room has a dead bandit in it.", [healing_potion], 100, bandit)
 a_combat_room_tough_bandit = text_adventure.combat_room(-1, 0, "This room has a tough bandit in it.", "This room has a dead tough bandit in it.", [healing_potion], 100, tough_bandit)
 a_shop_room = text_adventure.shop_room(0, 1, "This is a shop room.", [steel_sword, steel_armour, steel_shield], 1000)
+end_room = text_adventure.victory_room(2, 0, "You have won!")
 
 player = text_adventure.player([iron_sword, iron_armour, iron_shield], 100)
