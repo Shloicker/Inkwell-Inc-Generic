@@ -12,7 +12,7 @@ def test_attack():
     random.seed(0)
     player.equip(objects.iron_sword)
     player.move_north()
-    assert player.do_action(text_adventure.Attack) == "You hit Bandit with Iron Sword (equipped), dealing 38 damage!\nBandit now has 62 HP.\nBandit hits you for 25 damage!\nYou now have 75 HP."
+    assert player.do_action(text_adventure.Attack) == "You hit Bandit with Iron Sword (equipped), dealing 37 damage!\nBandit now has 63 HP.\nBandit hits you for 25 damage!\nYou now have 75 HP."
     player.hp = 100
     objects.bandit.hp = 100
     objects.iron_sword.equipped_as_weapon = False
