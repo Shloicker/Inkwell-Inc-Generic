@@ -45,7 +45,7 @@ class player():
         return "{} cannot be consumed.".format(item)
 
     def equip(self, item_to_be_equipped):
-        if issubclass(type(item_to_be_equipped), enemies.enemy):
+        if issubclass(type(item_to_be_equipped), enemies.enemy) or issubclass(type(item_to_be_equipped), items.currency):
             return "{} cannot be equipped.".format(item_to_be_equipped)
         if item_to_be_equipped not in self.inventory:
             return "There is no {} in your inventory.".format(item_to_be_equipped.name)
