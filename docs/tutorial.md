@@ -8,6 +8,7 @@
     * Items
     * Enemies
     * The Map
+4. Conclusion
 
 ### Getting Started
 
@@ -161,7 +162,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
 
  The items file contains all of the items that your game will use. The import line at the top should read:
 
-    from text_adventure import item, weapon, shield, armour, healing_consumable, currency
+     >>> from text_adventure import item, weapon, shield, armour, healing_consumable, currency
 
  As indicated by this code, you can make five different types of item as well as an additional special item - currency. An 'item' is a generic item and only has a name, description and value. The value determines how much money the player can buy or sell the item for. The first two arguments are strings and the third is an integer:
 
@@ -193,7 +194,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
     #name, description
     >>> gold = currency("Gold", "Valuable gold coins.")
 
- Note that, while the player will refer to items by their names, when referencing your items in ```game_player.py``` and ```game_map.py```, you will need to refer to them by their python ID, such as 'iron_sword.'
+ Note that, while the player will refer to items by their names, when referencing your items in ```game_player.py``` and ```game_map.py```, you will need to refer to them by their python ID, such as 'iron_sword.' Additionally, take caution when creating similar items - creating two items with the same string name will break the game as the player will only be able to refer to one of them.
 
  Finally, editing ```game_player.py``` is trivial; 'player_inventory' is the list of items that the player will start with and it can be empty. Remember to use the 'game_items' prefix on each item you reference. 'player_currency' is an integer that represents the amount of currency that the player will start with. Do not include your currency item in the player inventory - you are not supposed to create instances of it in-game.
 
@@ -250,5 +251,9 @@ Note that currency is a special item that must simply be referred to as 'gold' o
 
     #x, y, description
     end_room = victory_room(1, 0, "Victory is yours!")
+
+Finally, take caution when adding items to your map - having duplicates of items can lead to oddities due to current limitations in the code. While having duplicates of generic items and consumables is absolutely fine, duplicates of weapons, shields and armour will create bugs related to equipping.
+
+#### Conclusion
 
  With that you should have a fully functional game! You will most likely make mistakes so be prepared to encounter error messages when first running the game and to fix elements of your game accordingly.
