@@ -9,7 +9,7 @@ class item(object):
         world._objects[name.lower()] = self
 
     def observe_item(self):
-        return "{}\n-----\n{}\nValue: {}\n".format(self.name, self.description, self.value)
+        return "{}\n-----\n{}\nValue: {}".format(self.name, self.description, self.value)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -27,7 +27,7 @@ class weapon(item):
         super(weapon, self).__init__(name, description, value)
 
     def observe_item(self):
-        return "{}\n-----\n{}\nValue: {}\nDamage: {}\n".format(self.name, self.description, self.value, self.damage)
+        return "{}\n-----\n{}\nValue: {}\nDamage: {}".format(self.name, self.description, self.value, self.damage)
 
     def __str__(self):
         if self.equipped_as_weapon:
@@ -42,7 +42,7 @@ class healing_consumable(item):
         super(healing_consumable, self).__init__(name, description, value)
 
     def observe_item(self):
-        return "{}\n-----\n{}\nValue: {}\nHeals: {} health\n".format(self.name, self.description, self.value, self.healing_amount)
+        return "{}\n-----\n{}\nValue: {}\nHeals: {} health".format(self.name, self.description, self.value, self.healing_amount)
 
 class armour(item):
     """Armour value is integer between 0 and 100. It reduces incoming damage by that percentage (i.e. 20 armour means damage is reduced by 20%)."""
@@ -52,7 +52,7 @@ class armour(item):
         super(armour, self).__init__(name, description, value)
 
     def observe_item(self):
-        return "{}\n-----\n{}\nValue: {}\nArmour: {}\n".format(self.name, self.description, self.value, self.armour_value)
+        return "{}\n-----\n{}\nValue: {}\nArmour: {}".format(self.name, self.description, self.value, self.armour_value)
 
     def __str__(self):
         if self.equipped_as_armour:
@@ -67,7 +67,7 @@ class shield(item):
         super(shield, self).__init__(name, description, value)
 
     def observe_item(self):
-        return "{}\n-----\n{}\nValue: {}\nBlock: {}\n".format(self.name, self.description, self.value, self.block_value)
+        return "{}\n-----\n{}\nValue: {}\nBlock: {}".format(self.name, self.description, self.value, self.block_value)
 
     def __str__(self):
         if self.equipped_as_shield:
