@@ -45,27 +45,28 @@ def test_look_around():
     player.move_west()
 
 def test_drop():
-    assert player.do_action(text_adventure.Drop, objects.iron_sword) == "You drop Iron Sword"
-    player.do_action(text_adventure.PickUp, objects.iron_sword)
+    assert player.do_action(text_adventure.Drop, objects.iron_shield) == "You drop Iron Shield"
+    player.do_action(text_adventure.PickUp, objects.iron_shield)
 
 def test_pick_up():
-    player.do_action(text_adventure.Drop, objects.iron_sword)
-    assert player.do_action(text_adventure.PickUp, objects.iron_sword) == "You pick up Iron Sword."
+    player.do_action(text_adventure.Drop, objects.iron_shield)
+    assert player.do_action(text_adventure.PickUp, objects.iron_shield) == "You pick up Iron Shield."
 
 def test_buy():
     player.move_south()
     player.currency_amount = 1000
-    assert player.do_action(text_adventure.Buy, objects.steel_sword) == "You have bought Steel Sword for 750 Gold.\nYou now have 250 Gold. The shop now has 1750 Gold."
-    player.do_action(text_adventure.Sell, objects.steel_sword)
+    assert player.do_action(text_adventure.Buy, objects.steel_shield) == "You have bought Steel Shield for 750 Gold.\nYou now have 250 Gold. The shop now has 1750 Gold."
+    player.do_action(text_adventure.Sell, objects.steel_shield)
     player.move_north()
 
 def test_sell():
     player.move_south()
-    assert player.do_action(text_adventure.Sell, objects.iron_sword) == "You have sold Iron Sword for 500 Gold.\nYou now have 1500 Gold. The shop now has 500 Gold."
-    player.do_action(text_adventure.Buy, objects.iron_sword)
+    assert player.do_action(text_adventure.Sell, objects.iron_shield) == "You have sold Iron Shield for 500 Gold.\nYou now have 1500 Gold. The shop now has 500 Gold."
+    player.do_action(text_adventure.Buy, objects.iron_shield)
     player.move_north()
 
 def test_flee():
     random.seed(0)
     player.move_north()
     assert player.do_action(text_adventure.Flee) == "Bandit hits you for 25 damage!\nYou now have 75 HP.\nYou are in the starting room."
+    player.hp = 100

@@ -33,8 +33,8 @@ def test_gold():
 def test_buy():
     player.move_south()
     player.currency_amount = 1000
-    assert player.buy(objects.steel_sword) == "You have bought Steel Sword for 750 Gold.\nYou now have 250 Gold. The shop now has 1750 Gold."
-    player.sell(objects.steel_sword)
+    assert player.buy(objects.steel_shield) == "You have bought Steel Shield for 750 Gold.\nYou now have 250 Gold. The shop now has 1750 Gold."
+    player.sell(objects.steel_shield)
     player.move_north()
     player.currency_amount = 100
 
@@ -45,6 +45,7 @@ def test_sell():
     assert (player.sell(objects.gold_necklace)) ==  "You have sold Gold Necklace for 1000 Gold.\nYou now have 1100 Gold. The shop now has 500 Gold."
     player.buy(objects.gold_necklace)
     text_adventure.tile_exists(player.location_x, player.location_y).shop_currency_amount = 1000
+    player.inventory.remove(objects.gold_necklace)
     player.move_north()
 
 def test_drop():
