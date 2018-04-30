@@ -126,8 +126,8 @@ class player():
             if not enemy.is_alive():
                 return "You hit {} with {}, dealing {} damage - a killing blow!".format(enemy, equipped_weapon, dealt_damage)
             else:
-                return "You hit {} with {}, dealing {} damage!\n {} now has {} HP.".format(enemy, equipped_weapon, dealt_damage, enemy, enemy.hp) + "\n" + world.tile_exists(self.location_x, self.location_y).enemy_attack(self)
-        return "Your attack misses!\n {} still has {} HP.".format(enemy, enemy.hp) + "\n" + world.tile_exists(self.location_x, self.location_y).enemy_attack(self)
+                return "You hit {} with {}, dealing {} damage!\n{} now has {} HP.".format(enemy, equipped_weapon, dealt_damage, enemy, enemy.hp) + "\n" + world.tile_exists(self.location_x, self.location_y).enemy_attack(self)
+        return "Your attack misses!\n{} still has {} HP.".format(enemy, enemy.hp) + "\n" + world.tile_exists(self.location_x, self.location_y).enemy_attack(self)
 
     def flee(self):
         moves = world.tile_exists(self.location_x, self.location_y).adjacent_moves()
