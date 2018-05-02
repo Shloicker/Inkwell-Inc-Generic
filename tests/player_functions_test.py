@@ -62,12 +62,26 @@ def test_pickup():
 def test_attack_noweapon():
     player.move_north()
     assert (player.attack()) == "You need a weapon first!"
+    player.move_south()
 
-# def test_attack_weapon():
-#     # player.equip(objects.iron_sword)
-#     # assert (player.attack()) ==  ""
-#     pass
-#
-# def test_flee():
-#     # assert (player.flee()) == world.tile_exists(self.location_x, self.location_y).enemy_attack(self) + "\n" + self.do_action(moves[r])
-#     pass
+def test_attack_weapon():
+    player.move_north()
+    player.equip(objects.iron_sword)
+    import random
+    random.seed(0)
+    assert (player.attack()) ==  "You hit Bandit with Iron Sword (equipped), dealing 37 damage!\nBandit now has 63 HP.\nBandit hits you for 25 damage!\nYou now have 75 HP."
+    text_adventure.tile_exists(player.location_x, player.location_y).enemy.hp = 100
+    player.move_south()
+    player.hp = 100
+    objects.iron_sword.equipped_as_weapon = False
+
+def test_flee():
+    player.move_north()
+    player.equip(objects.iron_sword)
+    import random
+    random.seed(0)
+    assert (player.flee()) == "Bandit hits you for 25 damage!\nYou now have 75 HP.\nYou are in the starting room."
+    text_adventure.tile_exists(-1,0).enemy.hp = 100
+    player.move_south()
+    player.hp = 100
+    objects.iron_sword.equipped_as_weapon = False
