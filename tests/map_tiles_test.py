@@ -84,12 +84,12 @@ def test_sell_item():
     text_adventure.tile_exists(player.location_x, player.location_y).shop_currency_amount = 1000
     player.move_north()
 
-# def test_enemy_attack():
-#     player.move_west()
-#     random.seed(100)
-#     assert text_adventure.tile_exists(player.location_x, player.location_y).enemy_attack(player) == "Tough bandit. hits you for 50 damage!\nYou now have 50 HP."
-#     assert text_adventure.tile_exists(player.location_x, player.location_y).enemy_attack(player) == "You have fallen as Tough bandit. has hit you for 50 damage!"
-#     player.hp = 100
-#     random.seed(0)
-#     assert text_adventure.tile_exists(player.location_x, player.location_y).enemy_attack(player) == "Tough bandit. attacks but misses!"
-#     player.move_east()
+def test_enemy_attack():
+    player.move_west()
+    random.seed(100)
+    assert text_adventure.tile_exists(player.location_x, player.location_y).enemy_attack(player) == "Tough bandit. hits you for 50 damage!\nYou now have 50 HP."
+    assert text_adventure.tile_exists(player.location_x, player.location_y).enemy_attack(player) == "You have fallen as Tough bandit. has hit you for 50 damage!"
+    player.hp = 100
+    random.seed(-31)
+    assert text_adventure.tile_exists(player.location_x, player.location_y).enemy_attack(player) == "Tough bandit. attacks but misses!"
+    player.move_east()
