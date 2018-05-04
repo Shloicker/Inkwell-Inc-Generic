@@ -1,5 +1,5 @@
 # Inkwell-Inc-Generic
- This repository is reserved for the generic code of our text adventure and is managed by Dylan and Dom.
+ This repository is reserved for the generic code of our text adventure development library.
 
  To ensure you have to correct file structure, simply download the 7z archive that contains all of the required files in the correct structure. Be aware that you need to be running Python 2.7.12 to run this game. To install the library, navigate to the directory containing ```setup.py``` from your console and run the file by typing:
 
