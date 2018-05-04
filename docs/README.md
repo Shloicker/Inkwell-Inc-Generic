@@ -1,7 +1,7 @@
 # Inkwell-Inc-Generic
  This repository is reserved for the generic code of our text adventure development library.
 
- To ensure you have to correct file structure, simply download the 7z archive that contains all of the required files in the correct structure. Be aware that you need to be running Python 2.7.12 to run this game. To install the library, navigate to the directory containing ```setup.py``` from your console and run the file by typing:
+ This library allows you to easily build a functioning text adventure and contains a demo game that can be played straight away. Be aware that you need to be running Python 2.7.12 to run this game (such as through a virtual environment). To install the library, navigate to the directory containing ```setup.py``` from your console and run the file by typing:
 
     python setup.py install
 
