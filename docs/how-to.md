@@ -16,8 +16,9 @@
     >>> iron_armour = armour("Iron Armour", "Armour made of iron.", 1500, 25)
     >>> iron_shield = shield("Iron Shield", "A shield made of iron.", 500, 25)
     >>> ancient_amulet = item("Ancient Amulet", "An ancient amulet with curious engravings.", 5000)
+    >>> gold = currency("Gold", "Gold coins with curious engravings.")
 
- Our sword is worth 500 Gold and does 50 damage, our armour is worth 1500 Gold and provides 25% resistance and our shield is worth 500 Gold and provides a 25% block chance. To specify the player's inventory and currency amount, we edit the `game_player.py` file. To reference the items that we have just created, we will need to prefix them with `game_items`:
+ Our sword is worth 500 Gold and does 50 damage, our armour is worth 1500 Gold and provides 25% resistance and our shield is worth 500 Gold and provides a 25% block chance. As required we have also created an in-game currency. To specify the player's inventory and currency amount, we edit the `game_player.py` file. To reference the items that we have just created, we will need to prefix them with `game_items`:
 
     >>> player_inventory = [game_items.iron_sword, game_items.iron_shield, game_items.iron_armour]
     >>> player_currency = 0
