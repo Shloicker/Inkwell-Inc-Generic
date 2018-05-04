@@ -212,7 +212,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
     #name, description, hp, damage, armour, block
     >>> bandit = enemy("Bandit", "A scary bandit.", 100, 50, 25, 25)
 
- Similarly to in the case of armour and shield items, the armour value determines their resistance to damage and the block value determines their chance to dodge or block an attack. Note that enemies do not carry items but you can give the impression that they have dropped items when killed by adding such items to their tile - this will be discussed in the following section. Also at this stage in development it is not recommended to include more than one instance of an enemy in the game as this may lead to oddities with the code - you can , however, easily create two enemies that have the same name, description and stats if desired.
+ Similarly to in the case of armour and shield items, the armour value determines their resistance to damage and the block value determines their chance to dodge or block an attack. Note that enemies do not carry items but you can give the impression that they have dropped items when killed by adding such items to their tile - this will be discussed in the following section. Also at this stage in development it is not recommended to include more than one instance of the same enemy in game as this may lead to oddities with the code - you should also avoid creating two enemies with the same string name as with items.
 
 #### The Map
 
