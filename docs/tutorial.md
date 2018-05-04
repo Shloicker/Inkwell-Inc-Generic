@@ -189,7 +189,7 @@ Note that currency is a special item that must simply be referred to as 'gold' o
     #name, description, value, healing value
     >>> healing_potion = healing_consumable("Healing Potion", "A useful healing potion.", 250, 50)
 
- Finally we have the currency class - __you should make exactly one item of this type__. This will simply determine how currency is referred to in certain contexts, such as when taking inventory. It only requires a name and description:
+ Finally we have the currency class - __you should make exactly one item of this type__. This will simply determine how currency is referred to in certain contexts, such as when taking inventory, and you should not create instances of it in-game by adding it to the player's starting inventory or to any map tiles. It only requires a name and description:
 
     #name, description
     >>> gold = currency("Gold", "Valuable gold coins.")
