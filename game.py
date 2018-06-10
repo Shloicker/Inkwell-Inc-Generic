@@ -13,6 +13,10 @@ while player.is_not_dead() and not player.victory:
         for action in available_actions:
             print(action)
         action_input = raw_input("\nAction: ").lower()
+        while action_input[-1] == " ":
+            if action_input == " ":
+                break
+            action_input = action_input[:-1]
         for action in available_actions:
             if action_input == action.name:
                 if type(action) is text_adventure.action_arg:
