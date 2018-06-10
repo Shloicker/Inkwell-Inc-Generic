@@ -13,18 +13,24 @@ while player.is_not_dead() and not player.victory:
         for action in available_actions:
             print(action)
         action_input = raw_input("\nAction: ").lower()
-        while action_input[-1] == " ":
-            if action_input == " ":
-                break
-            action_input = action_input[:-1]
+        bools_actions = []
         for action in available_actions:
-            if action_input == action.name:
+            if action.name in action_input:
+                bools_actions.append(True)
                 if type(action) is text_adventure.action_arg:
-                    action_arg_input = raw_input("\n" + action.prompt).lower()
-                    if text_adventure.object_exists(action_arg_input):
-                        print("\n" + player.do_action(action, text_adventure.object_exists(action_arg_input)))
-                    else:
+                    bools_arg = []
+                    for item in text_adventure.objects_list:
+                        if item.name.lower() in action_input:
+                            bools_arg.append(True)
+                            print("\n" + player.do_action(action, item))
+                        else:
+                            bools_arg.append(False)
+                    if not any(bools_arg):
                         print("\nThere is no such thing.")
                     break
                 print("\n" + player.do_action(action))
                 break
+            else:
+                bools_actions.append(False)
+        if not any(bools_actions):
+            print("You can't do that.")
