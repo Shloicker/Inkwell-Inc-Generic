@@ -10,6 +10,7 @@ class enemy(object):
         self.armour = armour
         self.block = block
         world._objects[name.lower()] = self
+        world.objects_list.append(self)
 
     def is_alive(self):
         return self.hp >= 0

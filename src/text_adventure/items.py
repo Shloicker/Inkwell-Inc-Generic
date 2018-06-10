@@ -7,6 +7,7 @@ class item(object):
         self.description = description
         self.value = value
         world._objects[name.lower()] = self
+        world.objects_list.append(self)
 
     def observe_item(self):
         return "{}\n-----\n{}\nValue: {}".format(self.name, self.description, self.value)
