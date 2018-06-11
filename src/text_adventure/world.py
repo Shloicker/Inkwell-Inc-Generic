@@ -8,4 +8,6 @@ _objects = {}
 def object_exists(name):
     return _objects.get(name)
 
+objects_list = []
+
 world_currency = ""
