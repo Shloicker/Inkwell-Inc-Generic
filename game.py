@@ -1,7 +1,39 @@
-import text_adventure, game_items, game_enemies, game_map
-from game_player import player_inventory, player_currency
+import text_adventure, game_items, game_enemies, game_map, game_player
 
-player = text_adventure.player(player_inventory, player_currency)
+for keyword in game_player.move_north_keywords:
+    text_adventure.MoveNorth.strings.append(keyword)
+for keyword in game_player.move_east_keywords:
+    text_adventure.MoveEast.strings.append(keyword)
+for keyword in game_player.move_west_keywords:
+    text_adventure.MoveWest.strings.append(keyword)
+for keyword in game_player.move_south_keywords:
+    text_adventure.MoveSouth.strings.append(keyword)
+for keyword in game_player.take_inventory_keywords:
+    text_adventure.TakeInventory.strings.append(keyword)
+for keyword in game_player.attack_keywords:
+    text_adventure.Attack.strings.append(keyword)
+for keyword in game_player.equip_keywords:
+    text_adventure.Equip.strings.append(keyword)
+for keyword in game_player.consume_keywords:
+    text_adventure.Consume.strings.append(keyword)
+for keyword in game_player.observe_keywords:
+    text_adventure.Observe.strings.append(keyword)
+for keyword in game_player.look_around_keywords:
+    text_adventure.LookAround.strings.append(keyword)
+for keyword in game_player.drop_keywords:
+    text_adventure.Drop.strings.append(keyword)
+for keyword in game_player.pick_up_keywords:
+    text_adventure.PickUp.strings.append(keyword)
+for keyword in game_player.buy_keywords:
+    text_adventure.Buy.strings.append(keyword)
+for keyword in game_player.sell_keywords:
+    text_adventure.Sell.strings.append(keyword)
+for keyword in game_player.flee_keywords:
+    text_adventure.Flee.strings.append(keyword)
+
+help_text = "\nThe interpreter searches for key words in the text that you enter so simply use any of the key words for an action in a sentance and the game will attempt to perform that action. To perform an action on items or enemies, you will need to include the corresponding exact name(s) in the sentance. The input is not case sensitive.\n\nKey Words:\n\nMove North: " + ", ".join(game_player.move_north_keywords) + "\nMove South: " + ", ".join(game_player.move_south_keywords) + "\nMove East: " + ", ".join(game_player.move_east_keywords) + "\nMove West: " + ", ".join(game_player.move_west_keywords) + "\nTake Inventory: " + ", ".join(game_player.take_inventory_keywords) + "\nAttack: " + ", ".join(game_player.attack_keywords) + "\nEquip: " + ", ".join(game_player.equip_keywords) + "\nConsume: " + ", ".join(game_player.consume_keywords) + "\nObserve: " + ", ".join(game_player.observe_keywords) + "\nSearch a Room/Browse a Shop: " + ", ".join(game_player.look_around_keywords) + "\nDrop: " + ", ".join(game_player.drop_keywords) + "\nPick Up: " + ", ".join(game_player.pick_up_keywords) + "\nBuy: " + ", ".join(game_player.buy_keywords) + "\nSell: " + ", ".join(game_player.sell_keywords) + "\nFlee: " + ", ".join(game_player.flee_keywords)
+
+player = text_adventure.player(game_player.player_inventory, game_player.player_currency)
 room = text_adventure.tile_exists(player.location_x, player.location_y)
 print(room.show_room_text())
 while player.is_not_dead() and not player.victory:
@@ -9,7 +41,7 @@ while player.is_not_dead() and not player.victory:
     room.victory(player)
     if player.is_not_dead() and not player.victory:
         available_actions = room.available_actions()
-        directions = ""
+        directions = "\n"
         if text_adventure.MoveNorth in available_actions:
             directions += "^"
         if text_adventure.MoveSouth in available_actions:
@@ -46,4 +78,7 @@ while player.is_not_dead() and not player.victory:
                 break
             bools_actions.append(False)
         if not any(bools_actions):
-            print("You can't do that.")
+            if "help" in action_input:
+                    print(help_text)
+            else:
+                print("You can't do that.")
