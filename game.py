@@ -47,14 +47,27 @@ while player.is_not_dead() and not player.victory:
                     bools_actions.append(True)
                     if type(action) is text_adventure.action_arg:
                         bools_arg = []
+                        objects = []
                         for item in text_adventure.objects_list:
                             if item.name.lower() in action_input:
                                 bools_arg.append(True)
-                                print("\n" + player.do_action(action, item))
+                                objects.append(item)
                             else:
                                 bools_arg.append(False)
                         if not any(bools_arg):
                             print("\nThere is no such thing.")
+                        else:
+                            new_objects = []
+                            for item in objects:
+                                new_action_input = action_input
+                                for other_item in objects:
+                                    if not other_item == item:
+                                        if item.name.lower() in other_item.name.lower():
+                                            new_action_input = new_action_input.replace(other_item.name.lower(), "")
+                                if item.name.lower() in new_action_input:
+                                    new_objects.append(item)
+                            for item in new_objects:
+                                print("\n" + player.do_action(action, item))
                     else:
                         print("\n" + player.do_action(action))
                     break
