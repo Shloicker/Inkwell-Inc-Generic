@@ -68,6 +68,13 @@ class loot_room(map_tile):
             if item in player.inventory:
                 self.tile_inventory.append(item)
                 player.inventory.remove(item)
+                if not item in player.inventory:
+                    if player.equipped_weapon == item:
+                        player.equipped_weapon = None
+                    if player.equipped_armour == item:
+                        player.equipped_armour = None
+                    if player.equipped_shield == item:
+                        player.equipped_shield = None
                 return "You drop {}".format(item.name)
             return "There is no {} in your inventory.".format(item.name)
         return "That is not an item."
@@ -107,7 +114,7 @@ class shop_room(map_tile):
     def buy_item(self, player, item):
         if issubclass(type(item), items.item):
             if item in self.shop_inventory:
-                if item.value >= player.currency_amount:
+                if not item.value <= player.currency_amount:
                     return "You can't afford that!"
                 player.inventory.append(item)
                 player.currency_amount -= item.value
@@ -120,12 +127,19 @@ class shop_room(map_tile):
     def sell_item(self, player, item):
         if issubclass(type(item), items.item):
             if item in player.inventory:
-                if item.value >= self.shop_currency_amount:
+                if not item.value <= self.shop_currency_amount:
                     return "The store can't afford that!"
                 self.shop_inventory.append(item)
                 self.shop_currency_amount -= item.value
                 player.currency_amount += item.value
                 player.inventory.remove(item)
+                if not item in player.inventory:
+                    if player.equipped_weapon == item:
+                        player.equipped_weapon = None
+                    if player.equipped_armour == item:
+                        player.equipped_armour = None
+                    if player.equipped_shield == item:
+                        player.equipped_shield = None
                 return "You have sold {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount, world.world_currency)
             return "You have no {} to sell.".format(item)
         return "That is not an item."
@@ -152,23 +166,14 @@ class combat_room(loot_room):
         return moves
 
     def enemy_attack(self, player):
-        equipped_shield = None
-        equipped_armour = None
-        for item in player.inventory:
-            if issubclass(type(item), items.shield):
-                if item.equipped_as_shield:
-                    equipped_shield = item
-            if issubclass(type(item), items.armour):
-                if item.equipped_as_armour:
-                    equipped_armour = item
-        if equipped_shield == None:
+        if player.equipped_shield == None:
             block_value = 10
         else:
-            block_value = equipped_shield.block_value
-        if equipped_armour == None:
+            block_value = player.equipped_shield.block_value
+        if player.equipped_armour == None:
             armour = 100
         else:
-            armour = 100 - equipped_armour.armour_value
+            armour = 100 - player.equipped_armour.armour_value
         if random.randint(0, 100) >= block_value:
             dealt_damage = int(round((armour * self.enemy.damage) / 100))
             player.hp -= dealt_damage

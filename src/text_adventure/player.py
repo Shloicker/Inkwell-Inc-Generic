@@ -4,9 +4,12 @@ import random
 import text_adventure.world as world
 
 class player():
-    def __init__(self, inventory, currency_amount):
+    def __init__(self, inventory=[], currency_amount=0, equipped_weapon=None, equipped_armour=None, equipped_shield=None):
         self.inventory = inventory
         self.currency_amount = currency_amount
+        self.equipped_weapon = equipped_weapon
+        self.equipped_armour = equipped_armour
+        self.equipped_shield = equipped_shield
         self.hp = 100
         self.location_x = 0
         self.location_y = 0
@@ -16,7 +19,38 @@ class player():
         return self.hp > 0
 
     def take_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.inventory) + "\n{} {}.".format(self.currency_amount, world.world_currency) + "\nYou have {} HP.".format(self.hp)
+        items_in_inventory = []
+        for item in self.inventory:
+            if self.equipped_weapon == item:
+                string_bools = []
+                for string in items_in_inventory:
+                    if " (equipped weapon)" in string:
+                        string_bools.append(True)
+                        items_in_inventory.append(item.name)
+                        break
+                if not any(string_bools):
+                    items_in_inventory.append(item.name + " (equipped weapon)")
+            elif self.equipped_armour == item:
+                string_bools = []
+                for string in items_in_inventory:
+                    if " (equipped armour)" in string:
+                        string_bools.append(True)
+                        items_in_inventory.append(item.name)
+                        break
+                if not any(string_bools):
+                    items_in_inventory.append(item.name + " (equipped armour)")
+            elif self.equipped_shield == item:
+                string_bools = []
+                for string in items_in_inventory:
+                    if " (equipped shield)" in string:
+                        string_bools.append(True)
+                        items_in_inventory.append(item.name)
+                        break
+                if not any(string_bools):
+                    items_in_inventory.append(item.name + " (equipped shield)")
+            else:
+                items_in_inventory.append(item.name)
+        return '\n'.join(items_in_inventory) + "\n{} {}.".format(self.currency_amount, world.world_currency) + "\nYou have {} HP.".format(self.hp)
 
     def observe(self, subject):
         if issubclass(type(subject), items.item):
@@ -50,22 +84,13 @@ class player():
         if item_to_be_equipped not in self.inventory:
             return "There is no {} in your inventory.".format(item_to_be_equipped.name)
         if issubclass(type(item_to_be_equipped), items.weapon):
-            for item in self.inventory:
-                if issubclass(type(item), items.weapon):
-                    item.equipped_as_weapon = False
-            item_to_be_equipped.equipped_as_weapon = True
+            self.equipped_weapon = item_to_be_equipped
             return "You have equipped {} as weapon.".format(item_to_be_equipped)
         if issubclass(type(item_to_be_equipped), items.armour):
-            for item in self.inventory:
-                if issubclass(type(item), items.armour):
-                    item.equipped_as_armour = False
-            item_to_be_equipped.equipped_as_armour = True
+            self.equipped_armour = item_to_be_equipped
             return "You have equipped {} as armour.".format(item_to_be_equipped)
         if issubclass(type(item_to_be_equipped), items.shield):
-            for item in self.inventory:
-                if issubclass(type(item), items.shield):
-                    item.equipped_as_shield = False
-            item_to_be_equipped.equipped_as_shield = True
+            self.equipped_shield = item_to_be_equipped
             return "You have equipped {} as shield.".format(item_to_be_equipped)
         return "{} cannot be equipped.".format(item_to_be_equipped)
 
@@ -90,33 +115,17 @@ class player():
         return world.tile_exists(self.location_x, self.location_y).pick_up_item(self, item)
 
     def drop(self, item):
-        if issubclass(type(item), items.weapon):
-            item.equipped_as_weapon = False
-        if issubclass(type(item), items.armour):
-            item.equipped_as_armour = False
-        if issubclass(type(item), items.shield):
-            item.equipped_as_shield = False
         return world.tile_exists(self.location_x, self.location_y).drop_item(self, item)
 
     def buy(self, item):
         return world.tile_exists(self.location_x, self.location_y).buy_item(self, item)
 
     def sell(self, item):
-        if issubclass(type(item), items.weapon):
-            item.equipped_as_weapon = False
-        if issubclass(type(item), items.armour):
-            item.equipped_as_armour = False
-        if issubclass(type(item), items.shield):
-            item.equipped_as_shield = False
         return world.tile_exists(self.location_x, self.location_y).sell_item(self, item)
 
     def attack(self):
+        equipped_weapon = self.equipped_weapon
         enemy = world.tile_exists(self.location_x, self.location_y).enemy
-        equipped_weapon = None
-        for item in self.inventory:
-            if issubclass(type(item), items.weapon):
-                if item.equipped_as_weapon:
-                    equipped_weapon = item
         if equipped_weapon == None:
             return "You need a weapon first!"
         if random.randint(0, 100) >= enemy.block:
