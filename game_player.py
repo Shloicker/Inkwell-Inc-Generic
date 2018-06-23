@@ -1,10 +1,10 @@
 import game_items
 
 player_inventory = [game_items.iron_sword, game_items.iron_armour, game_items.iron_shield]      #the items that the player will start with
-player_currency = 100
+player_currency = 100                                                                           #the amount of currency that the player will start with
 player_equipped_weapon = game_items.iron_sword
 player_equipped_armour = game_items.iron_armour
-player_equipped_shield = game_items.iron_shield                                                                       #the amount of currency that the player will start with
+player_equipped_shield = game_items.iron_shield                                                                       
 
 #the following section is entirely optional - it allows you to add or remove keywords for player actions
 
