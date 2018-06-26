@@ -45,7 +45,14 @@ class loot_room(map_tile):
         return moves
 
     def view_tile_inventory(self):
-        return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\n{} {}".format(self.tile_currency_amount, world.world_currency)
+        if self.tile_inventory == [] and self.tile_currency_amount == 0:
+            return "There is nothing of interest here."
+        if self.tile_inventory == [] and not self.tile_currency_amount == 0:
+            return "{} {}".format(self.tile_currency_amount, world.world_currency)
+        if not self.tile_inventory == [] and self.tile_currency_amount == 0:
+            return '\n'.join('{}'.format(item) for item in self.tile_inventory)
+        if not self.tile_inventory == [] and not self.tile_currency_amount == 0:
+            return '\n'.join('{}'.format(item) for item in self.tile_inventory) + "\n{} {}".format(self.tile_currency_amount, world.world_currency)
 
     def pick_up_item(self, player, item):
         if type(item) is items.currency:
@@ -109,7 +116,14 @@ class shop_room(map_tile):
         return moves
 
     def view_tile_inventory(self):
-        return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\nThis store has {} {}.".format(self.shop_currency_amount, world.world_currency)
+        if self.shop_inventory == [] and self.shop_currency_amount == 0:
+            return "There is nothing in stock and the store has no {}.".format(world.world_currency)
+        if self.shop_inventory == [] and not self.shop_currency_amount == 0:
+            return "There is nothing in stock but the store has {} {}.".format(self.shop_currency_amount, world.world_currency)
+        if not self.shop_inventory == [] and self.shop_currency_amount == 0:
+            return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\n\nThe store has no {}.".format(world.world_currency)
+        if not self.shop_inventory == [] and not self.shop_currency_amount == 0:
+            return "Stock:\n" + '\n'.join('{}'.format(item) for item in self.shop_inventory) + "\n\nThe store has {} {}.".format(self.shop_currency_amount, world.world_currency)
 
     def buy_item(self, player, item):
         if issubclass(type(item), items.item):
@@ -120,7 +134,7 @@ class shop_room(map_tile):
                 player.currency_amount -= item.value
                 self.shop_currency_amount += item.value
                 self.shop_inventory.remove(item)
-                return "You have bought {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount, world.world_currency)
+                return "{} bought for {} {}.\nYour {}: {}\nStore {}: {}".format(item, item.value, world.world_currency, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount)
             return "The shop does not have {} in store.".format(item)
         return "That is not an item."
 
@@ -140,7 +154,7 @@ class shop_room(map_tile):
                         player.equipped_armour = None
                     if player.equipped_shield == item:
                         player.equipped_shield = None
-                return "You have sold {} for {} {}.\nYou now have {} {}. The shop now has {} {}.".format(item, item.value, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount, world.world_currency)
+                return "{} sold for {} {}.\nYour {}: {}\nStore {}: {}".format(item, item.value, world.world_currency, world.world_currency, player.currency_amount, world.world_currency, self.shop_currency_amount)
             return "You have no {} to sell.".format(item)
         return "That is not an item."
 
@@ -157,12 +171,12 @@ class combat_room(loot_room):
         return self.room_text_enemy_dead
 
     def available_actions(self):
-        if self.enemy.is_alive():
-            moves = [actions.Attack, actions.Flee, actions.Observe]
-            return moves
         moves = self.adjacent_moves()
         for move in [actions.TakeInventory, actions.Equip, actions.Observe, actions.Consume, actions.LookAround, actions.PickUp, actions.Drop]:
             moves.append(move)
+        if self.enemy.is_alive():
+            moves.append(actions.Attack)
+            moves.append(actions.Flee)
         return moves
 
     def enemy_attack(self, player):
