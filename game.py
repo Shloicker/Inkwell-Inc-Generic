@@ -45,6 +45,11 @@ while player.is_not_dead() and not player.victory:
                 if string in action_input:
                     bools_strings.append(True)
                     bools_actions.append(True)
+                    if action in [text_adventure.Equip, text_adventure.MoveNorth, text_adventure.MoveSouth, text_adventure.MoveEast, text_adventure.MoveWest, text_adventure.LookAround, text_adventure.PickUp, text_adventure.Drop]:
+                        if issubclass(type(room), text_adventure.combat_room):
+                            if room.enemy.is_alive():
+                                print("\nYou can't do that in combat!")
+                                break
                     if type(action) is text_adventure.action_arg:
                         bools_arg = []
                         objects = []
@@ -52,8 +57,6 @@ while player.is_not_dead() and not player.victory:
                             if item.name.lower() in action_input:
                                 bools_arg.append(True)
                                 objects.append(item)
-                            else:
-                                bools_arg.append(False)
                         if not any(bools_arg):
                             print("\nThere is no such thing.")
                         else:
